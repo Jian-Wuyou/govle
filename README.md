@@ -42,4 +42,4 @@ If you're using uWSGI like we are, you can use the following command to deploy t
 uwsgi --ini uwsgi.ini
 ```
 
-This will make your app accessible at `http://127.0.0.1:29001`, which you can change in `uwsgi.ini`.
+This will make your app accessible at `http://localhost:29001`, which you can change in `uwsgi.ini`.
