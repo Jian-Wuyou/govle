@@ -27,8 +27,7 @@ const buildDeadlineList = (rawDeadlineList) => {
         // Uncenter container contents
         $('#deadlines-container').removeClass('text-center');
     } else {
-        // Merge both deadline lists
-        mergedDeadlineList = Object.assign({}, rawDeadlineList[0], rawDeadlineList[1]);
+        mergedDeadlineList = rawDeadlineList[1];
     
         // Remove spinner
         $('#deadlines-container .spinner-border').remove();
