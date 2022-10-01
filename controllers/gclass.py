@@ -64,13 +64,15 @@ class GoogleClassroomClient(LearningEnv):
             for coursework in coursework_list:
                 # Check if coursework has a due date
                 due_timestamp = 0
+                # If dueDate exists then dueTime does as well
                 if 'dueDate' in coursework.keys():
                     # Parse the due date
                     due_y = coursework['dueDate']['year']
                     due_m = coursework['dueDate']['month']
                     due_d = coursework['dueDate']['day']
-                    due_h = coursework['dueTime']['hours']
-                    due_mm = coursework['dueTime']['minutes'] if 'minutes' in coursework['dueTime'].keys() else 0
+
+                    due_h = coursework['dueTime'].get('hours', 0)
+                    due_mm = coursework['dueTime'].get('minutes', 0)
                     due_str = f'{due_y}-{due_m:02d}-{due_d:02d} {due_h:02d}:{due_mm:02d}'
                     due_obj = datetime.strptime(due_str, '%Y-%m-%d %H:%M')
                     
