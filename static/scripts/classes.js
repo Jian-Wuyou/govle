@@ -37,50 +37,44 @@ const MoodleClass = (url, title, description, progress) => `
     fetch('/api/v1/moodle/courses')
         .then((response) => response.json())
         .then((moodle_classes) => {
-            const moodle_classes_el = $('#classes-moodle');
+            const moodle_classes_el = document.getElementById('classes-moodle');
 
             // Empty container
-            moodle_classes_el.empty();
+            while (moodle_classes_el.firstChild) {
+                moodle_classes_el.removeChild(moodle_classes_el.firstChild);
+            }
 
             // Create a new div for each class
             moodle_classes.forEach((moodle_class) => {
                 // Round completion status to 1 decimal place
                 const progress = Math.round(moodle_class.completion_status * 10) / 10;
 
-                // Create a new class element
-                const class_element = MoodleClass(
-                    moodle_class.url,
-                    moodle_class.name,
-                    moodle_class.description,
-                    progress
+                // Create and add a new class element to the page
+                moodle_classes_el.insertAdjacentHTML(
+                    'beforeend',
+                    MoodleClass(moodle_class.url, moodle_class.name, moodle_class.description, progress)
                 );
-
-                // Add the class element to the page
-                moodle_classes_el.append(class_element);
             });
         });
     fetch('/api/v1/google/classes')
         .then((response) => response.json())
         .then((google_classes) => {
-            const google_classes_el = $('#classes-classroom');
+            const google_classes_el = document.getElementById('classes-classroom');
 
             // Empty container
-            google_classes_el.empty();
+            while (google_classes_el.firstChild) {
+                google_classes_el.removeChild(google_classes_el.firstChild);
+            }
 
             // Iterate over each account in response data
             for (const [account_email, classes] of Object.entries(google_classes)) {
                 // Create a new div for each class
                 for (const class_data of classes) {
-                    // Create a new class element
-                    const class_element = GoogleClass(
-                        account_email,
-                        class_data.url,
-                        class_data.name,
-                        class_data.description
+                    // Create and add a new class element to the page
+                    google_classes_el.insertAdjacentHTML(
+                        'beforeend',
+                        GoogleClass(account_email, class_data.url, class_data.name, class_data.description)
                     );
-
-                    // Add the class element to the page
-                    google_classes_el.append(class_element);
                 }
             }
         });

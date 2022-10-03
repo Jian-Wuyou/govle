@@ -21,16 +21,17 @@ const Deadline = (deadlineName, deadlineLink) => `
 const MonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const buildDeadlineList = (rawDeadlineList) => {
     let mergedDeadlineList;
+    const deadlinesContainer = document.getElementById('deadlines-container');
     if (rawDeadlineList.length === 1) {
         mergedDeadlineList = rawDeadlineList[0];
 
         // Uncenter container contents
-        $('#deadlines-container').removeClass('text-center');
+        deadlinesContainer.classList.remove('text-center');
     } else {
         mergedDeadlineList = rawDeadlineList[1];
 
         // Remove spinner
-        $('#deadlines-container .spinner-border').remove();
+        deadlinesContainer.querySelectorAll('.spinner-border').forEach((e) => e.remove());
     }
 
     // Iterate through each date
@@ -64,28 +65,28 @@ const buildDeadlineList = (rawDeadlineList) => {
             deadlineSetList.push(deadlineSet);
         }
 
-        // Concat all deadline set elements into one string
-        const deadlineRow = DeadlineRow(day, month, deadlineSetList.join(''));
-
-        $('#deadlines-container').append(deadlineRow);
+        // Concat all deadline set elements into one string and insert it into page
+        deadlinesContainer.insertAdjacentHTML('beforeend', DeadlineRow(day, month, deadlineSetList.join('')));
     }
 
     // Update number of deadlines
     const with_s = num_deadlines === 1 ? '' : 's';
-    $('#deadlines-overview').text(`${num_deadlines} assignment${with_s}`);
+
+    // TO-DO: implement #deadlines-overview or remove this code
+    document.getElementById('deadlines-overview').innerText = `${num_deadlines} assignment${with_s}`;
 };
 
 (() => {
     // Update greeting with proper time of day
-    const timeOfDayGreeting = $('#time-of-day');
+    const timeOfDayGreeting = document.getElementById('time-of-day');
     const currentHour = new Date().getHours();
     let timeOfDay = 'day';
     if (currentHour < 12) {
-        timeOfDayGreeting.text('morning');
+        timeOfDayGreeting.innerText = 'morning';
     } else if (currentHour < 18) {
-        timeOfDayGreeting.text('afternoon');
+        timeOfDayGreeting.innerText = 'afternoon';
     } else {
-        timeOfDayGreeting.text('evening');
+        timeOfDayGreeting.innerText = 'evening';
         timeOfDay = 'night';
     }
 
@@ -93,20 +94,25 @@ const buildDeadlineList = (rawDeadlineList) => {
     fetch(`/api/v1/weather?timeOfDay=${timeOfDay}`)
         .then((response) => response.json())
         .then((weather) => {
-            $('#weather-icon').addClass(`wi-${weather.icon}`);
-            $('#weather-temp').html(`${weather.temperature}&deg;C`);
-            $('#weather-desc').text(`${weather.condition} in ${weather.place}`);
-            $('#weather-fl').html(`Feels like ${weather.feels_like}&deg;C`);
+            document.getElementById('weather-icon').classList.add(`wi-${weather.icon}`);
+            document.getElementById('weather-temp').innerHTML = `${weather.temperature}&deg;C`;
+            document.getElementById('weather-desc').innerText = `${weather.condition} in ${weather.place}`;
+            document.getElementById('weather-fl').innerHTML = `Feels like ${weather.feels_like}&deg;C`;
         });
 
     // Get list of deadlines from API
     let deadlines = [];
+
+    const deadlinesContainer = document.getElementById('deadlines-container');
     fetch('/api/v1/moodle/deadlines')
         .then((response) => response.json())
         .then((moodle_deadlines) => {
             // If the dict is empty, display a message saying so.
             if (Object.keys(moodle_deadlines).length === 0) {
-                $('#deadlines-container').append(`<p class="text-center">No deadlines from UVL&#234;.</p>`);
+                deadlinesContainer.insertAdjacentHTML(
+                    'beforeend',
+                    `<p class="text-center">No deadlines from UVL&#234;.</p>`
+                );
             }
             deadlines.push(moodle_deadlines);
         })
@@ -116,7 +122,10 @@ const buildDeadlineList = (rawDeadlineList) => {
         .then((google_deadlines) => {
             // If the list is empty, display a message saying so.
             if (Object.keys(google_deadlines).length === 0) {
-                $('#deadlines-container').append(`<p class="text-center">No deadlines from Google Classroom.</p>`);
+                deadlinesContainer.insertAdjacentHTML(
+                    'beforeend',
+                    `<p class="text-center">No deadlines from Google Classroom.</p>`
+                );
             }
             deadlines.push(google_deadlines);
         })
