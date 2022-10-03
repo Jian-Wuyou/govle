@@ -115,8 +115,8 @@ const buildDeadlineList = (rawDeadlineList) => {
                 );
             }
             deadlines.push(moodle_deadlines);
-        })
-        .then(() => buildDeadlineList(deadlines));
+            buildDeadlineList(deadlines);
+        });
     fetch('/api/v1/google/coursework')
         .then((response) => response.json())
         .then((google_deadlines) => {
@@ -128,6 +128,6 @@ const buildDeadlineList = (rawDeadlineList) => {
                 );
             }
             deadlines.push(google_deadlines);
-        })
-        .then(() => buildDeadlineList(deadlines));
+            buildDeadlineList(deadlines);
+        });
 })();
