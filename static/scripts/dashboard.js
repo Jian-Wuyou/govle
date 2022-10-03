@@ -28,7 +28,7 @@ const buildDeadlineList = (rawDeadlineList) => {
         $('#deadlines-container').removeClass('text-center');
     } else {
         mergedDeadlineList = rawDeadlineList[1];
-    
+
         // Remove spinner
         $('#deadlines-container .spinner-border').remove();
     }
@@ -48,30 +48,24 @@ const buildDeadlineList = (rawDeadlineList) => {
             const deadlineList = [];
             for (let deadline in mergedDeadlineList[date][course]['deadlines']) {
                 // Add deadline to list
-                deadlineList.push(Deadline(
-                    mergedDeadlineList[date][course]['deadlines'][deadline]['name'],
-                    mergedDeadlineList[date][course]['deadlines'][deadline]['url']
-                ));
+                deadlineList.push(
+                    Deadline(
+                        mergedDeadlineList[date][course]['deadlines'][deadline]['name'],
+                        mergedDeadlineList[date][course]['deadlines'][deadline]['url']
+                    )
+                );
 
                 // Increment number of deadlines
                 num_deadlines++;
             }
 
             // Concat all deadline elements into one string
-            const deadlineSet = DeadlineSet(
-                course,
-                mergedDeadlineList[date][course]['url'],
-                deadlineList.join('')
-            );
+            const deadlineSet = DeadlineSet(course, mergedDeadlineList[date][course]['url'], deadlineList.join(''));
             deadlineSetList.push(deadlineSet);
         }
 
         // Concat all deadline set elements into one string
-        const deadlineRow = DeadlineRow(
-            day,
-            month,
-            deadlineSetList.join('')
-        );
+        const deadlineRow = DeadlineRow(day, month, deadlineSetList.join(''));
 
         $('#deadlines-container').append(deadlineRow);
     }
@@ -81,7 +75,7 @@ const buildDeadlineList = (rawDeadlineList) => {
     $('#deadlines-overview').text(`${num_deadlines} assignment${with_s}`);
 };
 
-$(document).ready(() => {
+(() => {
     // Update greeting with proper time of day
     const timeOfDayGreeting = $('#time-of-day');
     const currentHour = new Date().getHours();
@@ -96,8 +90,9 @@ $(document).ready(() => {
     }
 
     // Get weather from API
-    fetch(`/api/v1/weather?timeOfDay=${timeOfDay}`).then(response => response.json())
-        .then(weather => {
+    fetch(`/api/v1/weather?timeOfDay=${timeOfDay}`)
+        .then((response) => response.json())
+        .then((weather) => {
             $('#weather-icon').addClass(`wi-${weather.icon}`);
             $('#weather-temp').html(`${weather.temperature}&deg;C`);
             $('#weather-desc').text(`${weather.condition} in ${weather.place}`);
@@ -106,8 +101,9 @@ $(document).ready(() => {
 
     // Get list of deadlines from API
     let deadlines = [];
-    fetch('/api/v1/moodle/deadlines').then(response => response.json())
-        .then(moodle_deadlines => {
+    fetch('/api/v1/moodle/deadlines')
+        .then((response) => response.json())
+        .then((moodle_deadlines) => {
             // If the dict is empty, display a message saying so.
             if (Object.keys(moodle_deadlines).length === 0) {
                 $('#deadlines-container').append(`<p class="text-center">No deadlines from UVL&#234;.</p>`);
@@ -115,13 +111,14 @@ $(document).ready(() => {
             deadlines.push(moodle_deadlines);
         })
         .then(() => buildDeadlineList(deadlines));
-    fetch('/api/v1/google/coursework').then(response => response.json())
-        .then(google_deadlines => {
+    fetch('/api/v1/google/coursework')
+        .then((response) => response.json())
+        .then((google_deadlines) => {
             // If the list is empty, display a message saying so.
             if (Object.keys(google_deadlines).length === 0) {
                 $('#deadlines-container').append(`<p class="text-center">No deadlines from Google Classroom.</p>`);
             }
-            deadlines.push(google_deadlines)
+            deadlines.push(google_deadlines);
         })
         .then(() => buildDeadlineList(deadlines));
-});
+})();

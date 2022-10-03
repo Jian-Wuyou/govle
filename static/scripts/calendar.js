@@ -43,9 +43,7 @@ function getCalendarCurrent(date) {
     updateUrlQuery(date); // change URL query to match current month/year
 
     let month = date.getMonth();
-    document.getElementById('calendar-date').innerText = `${
-        months[month]
-    } ${date.getFullYear()}`;
+    document.getElementById('calendar-date').innerText = `${months[month]} ${date.getFullYear()}`;
 
     let table = date.getDay() ? '<tr>' : '';
     //number of cells

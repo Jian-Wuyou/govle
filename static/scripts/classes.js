@@ -32,17 +32,18 @@ const MoodleClass = (url, title, description, progress) => `
     </div>
 `;
 
-$(document).ready(() => {
+(() => {
     // Get list of classes from API
-    fetch('/api/v1/moodle/courses').then(response => response.json())
-        .then(moodle_classes => {
+    fetch('/api/v1/moodle/courses')
+        .then((response) => response.json())
+        .then((moodle_classes) => {
             const moodle_classes_el = $('#classes-moodle');
 
             // Empty container
             moodle_classes_el.empty();
 
             // Create a new div for each class
-            moodle_classes.forEach(moodle_class => {
+            moodle_classes.forEach((moodle_class) => {
                 // Round completion status to 1 decimal place
                 const progress = Math.round(moodle_class.completion_status * 10) / 10;
 
@@ -52,14 +53,15 @@ $(document).ready(() => {
                     moodle_class.name,
                     moodle_class.description,
                     progress
-                )
+                );
 
                 // Add the class element to the page
                 moodle_classes_el.append(class_element);
             });
         });
-    fetch('/api/v1/google/classes').then(response => response.json())
-        .then(google_classes => {
+    fetch('/api/v1/google/classes')
+        .then((response) => response.json())
+        .then((google_classes) => {
             const google_classes_el = $('#classes-classroom');
 
             // Empty container
@@ -82,4 +84,4 @@ $(document).ready(() => {
                 }
             }
         });
-});
+})();

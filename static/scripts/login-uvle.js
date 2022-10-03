@@ -14,12 +14,12 @@ UHkc+1H7WUH6N8R+L8KBMvGu7WEUe9rWGHkomvceQbfgNGnQMbt60CS+oUuQiU9e
 K1Z/UrUgs/OCRvnAekt0dOcCAwEAAQ==
 -----END PUBLIC KEY-----`;
 
-window.onload = () => {
+(() => {
     // Unhide the form when the "I understand" checkbox is filled
     const checkbox = document.getElementById('exampleCheck1');
-    const form = document.querySelector('form');
+    const form = document.getElementsByTagName('form')[0];
     const message = document.getElementById('alert-content');
-    checkbox.onchange = () => {
+    checkbox.addEventListener('change', () => {
         if (checkbox.checked) {
             form.style.display = 'block';
             message.style.display = 'none';
@@ -27,7 +27,7 @@ window.onload = () => {
             form.style.display = 'none';
             message.style.display = 'block';
         }
-    }
+    });
 
     // Form submit handler
     form.addEventListener('submit', (event) => {
@@ -42,24 +42,25 @@ window.onload = () => {
             alert('Please fill in both fields');
             return;
         }
-        
+
         // Encrypt credentials
         const credentials = `${username}:${password}`;
         const encrypt = new JSEncrypt();
         encrypt.setPublicKey(govle_public_key);
         const encrypted = encrypt.encrypt(credentials);
-        
+
         // Transmit encrypted credentials to server via POST
         fetch('/link-uvle', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'credentials': encrypted
-            })
-        }).then(response => response.json())
-            .then(data => {
+                credentials: encrypted,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
                 if (data['success']) {
                     window.location.href = '/settings';
                 } else {
@@ -67,4 +68,4 @@ window.onload = () => {
                 }
             });
     });
-}
+})();
