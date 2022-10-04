@@ -38,8 +38,7 @@ function updateUrlQuery(date) {
 
 // TO-DO: try changing `.innerHTML = htmlString` to DocumentFragments or similar and compare performance
 function getCalendarCurrent(date) {
-    date = new Date(date); // avoid modifying original date object
-    date.setDate(1);
+    date = new Date(date.getFullYear(), date.getMonth()); // avoid modifying original date object
     updateUrlQuery(date); // change URL query to match current month/year
 
     let month = date.getMonth();
@@ -86,7 +85,6 @@ function getCalendarCurrent(date) {
 
 //get classes from UVLE and google classroom
 //if UVLE red if GClass green
-// TO-DO: make async to avoid callback hell
 (() => {
     // Get URL query parameters
     const params = new Proxy(new URLSearchParams(window.location.search), {

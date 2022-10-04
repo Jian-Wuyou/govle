@@ -41,9 +41,7 @@ const unlink_account = (type, id) => {
             const account_list = document.getElementById('linked-accounts');
 
             // Empty container
-            while (account_list.firstChild) {
-                account_list.removeChild(account_list.firstChild);
-            }
+            account_list.replaceChildren();
 
             // Check if Moodle account is present
             if (all_accounts['moodle']) {
