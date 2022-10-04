@@ -40,9 +40,7 @@ const MoodleClass = (url, title, description, progress) => `
             const moodle_classes_el = document.getElementById('classes-moodle');
 
             // Empty container
-            while (moodle_classes_el.firstChild) {
-                moodle_classes_el.removeChild(moodle_classes_el.firstChild);
-            }
+            moodle_classes_el.replaceChildren();
 
             // Create a new div for each class
             moodle_classes.forEach((moodle_class) => {
@@ -62,9 +60,7 @@ const MoodleClass = (url, title, description, progress) => `
             const google_classes_el = document.getElementById('classes-classroom');
 
             // Empty container
-            while (google_classes_el.firstChild) {
-                google_classes_el.removeChild(google_classes_el.firstChild);
-            }
+            google_classes_el.replaceChildren();
 
             // Iterate over each account in response data
             for (const [account_email, classes] of Object.entries(google_classes)) {

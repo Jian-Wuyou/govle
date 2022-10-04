@@ -19,18 +19,18 @@ const Deadline = (deadlineName, deadlineLink) => `
     </li>
 `;
 const MonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const buildDeadlineList = (rawDeadlineList) => {
-    let mergedDeadlineList;
-    const deadlinesContainer = document.getElementById('deadlines-container');
-    if (rawDeadlineList.length === 1) {
-        mergedDeadlineList = rawDeadlineList[0];
 
-        // Uncenter container contents
+const buildDeadlineList = (rawDeadlineList) => {
+    const deadlinesContainer = document.getElementById('deadlines-container');
+
+    // clear deadlines
+    deadlinesContainer.replaceChildren();
+
+    const mergedDeadlineList = Object.assign({}, ...rawDeadlineList);
+
+    if (rawDeadlineList.length === 1) {
         deadlinesContainer.classList.remove('text-center');
     } else {
-        mergedDeadlineList = rawDeadlineList[1];
-
-        // Remove spinner
         deadlinesContainer.querySelectorAll('.spinner-border').forEach((e) => e.remove());
     }
 
@@ -66,14 +66,13 @@ const buildDeadlineList = (rawDeadlineList) => {
         }
 
         // Concat all deadline set elements into one string and insert it into page
-        deadlinesContainer.insertAdjacentHTML('beforeend', DeadlineRow(day, month, deadlineSetList.join('')));
+        deadlinesContainerFragment.insertAdjacentHTML('beforeend', DeadlineRow(day, month, deadlineSetList.join('')));
     }
 
-    // Update number of deadlines
-    const with_s = num_deadlines === 1 ? '' : 's';
-
     // TO-DO: implement #deadlines-overview or remove this code
-    document.getElementById('deadlines-overview').innerText = `${num_deadlines} assignment${with_s}`;
+    document.getElementById('deadlines-overview').innerText = `${num_deadlines} assignment${
+        num_deadlines === 1 ? '' : 's'
+    }`;
 };
 
 (() => {
