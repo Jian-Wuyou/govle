@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
-from models.credentials import GoogleCredentials, MoodleCredentials
 from typing import Dict, Optional, Union
+
+from govle.models.credentials import GoogleCredentials, MoodleCredentials
+
 
 @dataclass
 class Profile():

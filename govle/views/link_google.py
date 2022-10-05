@@ -1,8 +1,8 @@
+import google_auth_oauthlib.flow
 from flask import Blueprint, current_app, redirect, request, session, url_for
 from flask_login import current_user, login_required
-from models.credentials import GoogleCredentials
+from govle.models.credentials import GoogleCredentials
 from requests import get
-import google_auth_oauthlib.flow
 
 link_google = Blueprint('link-google', __name__, template_folder='templates')
 

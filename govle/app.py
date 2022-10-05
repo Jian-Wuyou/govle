@@ -1,22 +1,27 @@
 # Main application file for GoVLê
-from controllers import init_api
-from controllers.database import Database
+from os import environ, path
+
+import firebase_admin
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 from firebase_admin import credentials, db
 from flask import Flask, redirect, request, url_for
 from flask_login import LoginManager
-from models.profile import Profile
-from os import environ
-from views import init_views
-import firebase_admin
+
+from govle.controllers import init_api
+from govle.controllers.database import Database
+from govle.models.profile import Profile
+from govle.views import init_views
 
 # Environment variables
 load_dotenv()
 
+print(find_dotenv())
+
 # Flask app
-app = Flask(__name__)
+root_path = path.abspath('.')
+app = Flask(__name__, root_path=root_path)
 
 # Authentication
 if 'FLASK_SECRET_KEY' not in environ:

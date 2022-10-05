@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
-from models.credentials import LearningEnvCredentials
-from models.learning_env_class import LearningEnvClass
 from typing import List
+
+from govle.models.credentials import LearningEnvCredentials
+from govle.models.learning_env_class import LearningEnvClass
 
 
 class LearningEnv(ABC):

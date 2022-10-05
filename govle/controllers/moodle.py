@@ -1,9 +1,10 @@
-from models.credentials import MoodleCredentials
-from models.deadline import Deadline
-from models.learning_env_class import MoodleClass
 from typing import Dict, List, Optional
-from .learning_env import LearningEnv
+
 import requests
+from govle.controllers.learning_env import LearningEnv
+from govle.models.credentials import MoodleCredentials
+from govle.models.deadline import Deadline
+from govle.models.learning_env_class import MoodleClass
 
 
 class MoodleClient(LearningEnv):

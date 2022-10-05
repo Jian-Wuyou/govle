@@ -1,18 +1,19 @@
 from curses import raw
-from controllers.gclass import GoogleClassroomClient
-from flask import Blueprint, current_app, redirect, url_for
-from flask_login import login_required, current_user
 from json import dumps
-from models.credentials import GoogleCredentials
-from models.deadline import sort_deadlines
-from models.learning_env_class import LearningEnvClassEnc
+
+from flask import Blueprint, current_app, redirect, url_for
+from flask_login import current_user, login_required
+from govle.controllers.gclass import GoogleClassroomClient
+from govle.models.credentials import GoogleCredentials
+from govle.models.deadline import sort_deadlines
+from govle.models.learning_env_class import LearningEnvClassEnc
 
 gclass = Blueprint('gclass', __name__)
 
 # Nice way to require login for entire blueprint
 @gclass.before_request
 @login_required
-def gclass_before_request():
+def gclass_before_request(): 
     # Check if user has Google credentials
     if len(current_user.google_accounts.keys()) == 0:
         # Redirect to Google account linking page
