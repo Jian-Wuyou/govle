@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, session
 from flask_login import current_user, login_required
 
-dashboard = Blueprint('dashboard', __name__, template_folder='templates')
+dashboard = Blueprint('dashboard', __name__)
 
 @dashboard.route('/dashboard')
 @login_required

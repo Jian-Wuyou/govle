@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 from govle.models.credentials import GoogleCredentials
 from requests import get
 
-link_google = Blueprint('link-google', __name__, template_folder='templates')
+link_google = Blueprint('link-google', __name__)
 
 # Google OAuth2 scopes
 scopes = [

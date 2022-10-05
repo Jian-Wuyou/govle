@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
 
-calendar = Blueprint('calendar', __name__, template_folder='templates')
+calendar = Blueprint('calendar', __name__)
 
 @calendar.route('/calendar')
 @login_required

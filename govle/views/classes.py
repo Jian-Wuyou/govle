@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
 
-classes = Blueprint('classes', __name__, template_folder='templates')
+classes = Blueprint('classes', __name__)
 
 @classes.route('/classes')
 @login_required

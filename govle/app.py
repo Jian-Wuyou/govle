@@ -17,10 +17,8 @@ from govle.views import init_views
 # Environment variables
 load_dotenv()
 
-print(find_dotenv())
-
 # Flask app
-root_path = path.abspath('.')
+root_path = path.abspath(path.join(path.dirname(__file__), '..'))
 app = Flask(__name__, root_path=root_path)
 
 # Authentication

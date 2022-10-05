@@ -1,2 +1,2 @@
-FLASK_APP="govle.app"
+FLASK_APP="govle.app:app"
 FLASK_ENV="development"

@@ -7,7 +7,7 @@ from flask_login import current_user, login_required
 from govle.models.credentials import MoodleCredentials
 from requests import get
 
-link_moodle = Blueprint('link-moodle', __name__, template_folder='templates')
+link_moodle = Blueprint('link-moodle', __name__)
 
 @link_moodle.route('/link-uvle', methods=['GET'])
 @login_required

@@ -8,7 +8,7 @@ from google.auth.transport import requests
 from google.oauth2 import id_token
 from govle.models.profile import create_from_google_jwt
 
-login = Blueprint('login', __name__, template_folder='templates')
+login = Blueprint('login', __name__)
 
 
 # https://stackoverflow.com/a/61446498
