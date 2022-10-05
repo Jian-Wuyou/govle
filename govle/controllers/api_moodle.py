@@ -1,11 +1,12 @@
-from .moodle import MoodleClient
-from flask import Blueprint, current_app, redirect, url_for
-from flask_login import login_required, current_user
 from json import dumps
-from models.credentials import MoodleCredentials
-from models.deadline import Deadline, sort_deadlines
-from models.learning_env_class import LearningEnvClassEnc
 from typing import List
+
+from flask import Blueprint, current_app, redirect, url_for
+from flask_login import current_user, login_required
+from govle.controllers.moodle import MoodleClient
+from govle.models.credentials import MoodleCredentials
+from govle.models.deadline import Deadline, sort_deadlines
+from govle.models.learning_env_class import LearningEnvClassEnc
 
 moodle = Blueprint('moodle', __name__)
 

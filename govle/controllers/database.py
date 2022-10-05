@@ -1,8 +1,9 @@
 from dataclasses import asdict
-from firebase_admin.db import Reference
-from models.credentials import GoogleCredentials, MoodleCredentials
-from models.profile import Profile
 from typing import Dict, Optional
+
+from firebase_admin.db import Reference
+from govle.models.credentials import GoogleCredentials, MoodleCredentials
+from govle.models.profile import Profile
 
 
 def _reconstruct_user_from_db(user_data: Dict) -> Profile:

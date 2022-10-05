@@ -1,12 +1,14 @@
 from datetime import datetime
+from typing import Callable, Dict, List
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
-from models.deadline import Deadline
-from models.learning_env_class import GoogleClass
-from models.credentials import GoogleCredentials
-from typing import Callable, Dict, List
-from .learning_env import LearningEnv
+from govle.controllers.learning_env import LearningEnv
+from govle.models.credentials import GoogleCredentials
+from govle.models.deadline import Deadline
+from govle.models.learning_env_class import GoogleClass
+
 
 class GoogleClassroomClient(LearningEnv):
     def __init__(self, credentials: Dict, on_token_refresh: Callable[[GoogleCredentials], None]):

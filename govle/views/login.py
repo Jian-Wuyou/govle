@@ -1,10 +1,12 @@
-from flask import Blueprint, current_app, render_template, request, redirect, session, url_for
+from os import environ
+from urllib.parse import urljoin, urlparse
+
+from flask import (Blueprint, current_app, redirect, render_template, request,
+                   session, url_for)
 from flask_login import current_user, login_user
 from google.auth.transport import requests
 from google.oauth2 import id_token
-from models.profile import create_from_google_jwt
-from os import environ
-from urllib.parse import urljoin, urlparse
+from govle.models.profile import create_from_google_jwt
 
 login = Blueprint('login', __name__, template_folder='templates')
 

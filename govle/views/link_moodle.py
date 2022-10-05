@@ -1,9 +1,10 @@
 import base64
+from os import environ
+
 from cryptography.hazmat.primitives.asymmetric import padding
 from flask import Blueprint, current_app, render_template, request
 from flask_login import current_user, login_required
-from models.credentials import MoodleCredentials
-from os import environ
+from govle.models.credentials import MoodleCredentials
 from requests import get
 
 link_moodle = Blueprint('link-moodle', __name__, template_folder='templates')

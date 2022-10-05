@@ -1,8 +1,8 @@
+from json import dumps
+
 from flask import Blueprint, current_app, request
 from flask_login import login_required
-from json import dumps
 from requests import get
-from typing import Tuple
 
 weather = Blueprint('weather', __name__)
 
