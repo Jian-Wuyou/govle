@@ -13,11 +13,21 @@ repos:
     # Python
     -   id: check-ast
     -   id: double-quote-string-fixer
+        exclude_types: [python]
 -   repo: https://github.com/asottile/pyupgrade
     rev: v3.0.0
     hooks:
     -   id: pyupgrade
--   repo: https://github.com/PyCQA/pylint
-    rev: v2.15.3
+-   repo: local
     hooks:
     -   id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        args:
+          [
+            "-rn", # Only display messages
+            "-sn", # Don't display the score
+            "--rcfile=.pylintrc", # Link to your config file
+          ]

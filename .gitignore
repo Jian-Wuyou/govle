@@ -16,7 +16,7 @@
 # IntelliJ IDEA
 **/.idea
 
-# Local testing 
+# Local testing
 **/*.pem
 
 # Virtualenv

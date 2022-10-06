@@ -11,43 +11,43 @@ class LearningEnvCredentials(ABC):
 @dataclass
 class GoogleCredentials(LearningEnvCredentials):
     # Associated user ID
-    user_id: str = ''
-    
+    user_id: str = ""
+
     # Associated e-mail address
-    email: str = ''
+    email: str = ""
 
     # OAuth2 access token
-    token: str = ''
+    token: str = ""
 
     # OAuth2 refresh token
-    refresh_token: str = ''
+    refresh_token: str = ""
 
     # OAuth2 token URI
-    token_uri: str = ''
+    token_uri: str = ""
 
     # OAuth2 client ID
-    client_id: str = ''
+    client_id: str = ""
 
     # OAuth2 client secret
-    client_secret: str = ''
+    client_secret: str = ""
 
     # OAuth2 scopes
     scopes: List[str] = field(default_factory=list)
 
     # OpenID token
-    id_token: str = ''
+    id_token: str = ""
 
     # OAuth2 expiry
-    expiry: str = ''
+    expiry: str = ""
 
 
 @dataclass
 class MoodleCredentials(LearningEnvCredentials):
     # Username
-    username: str = ''
+    username: str = ""
 
     # Token
-    password: str = ''
+    password: str = ""
 
     # Moodle server URL
-    server: str = ''
+    server: str = ""

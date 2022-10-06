@@ -37,12 +37,12 @@ class DeadlineEnc(JSONEncoder):
     def default(self, o):
         if isinstance(o, Deadline):
             return {
-                'name': o.name,
-                'timestamp': o.timestamp,
-                'course': o.course,
-                'course_id': o.course_id,
-                'platform': o.platform,
-                'url': o.url
+                "name": o.name,
+                "timestamp": o.timestamp,
+                "course": o.course,
+                "course_id": o.course_id,
+                "platform": o.platform,
+                "url": o.url,
             }
         return JSONEncoder.default(self, o)
 
@@ -54,32 +54,34 @@ def sort_deadlines(raw_deadlines: List[Deadline]) -> Dict[str, any]:
         # Parse date from Unix timestamp
         if deadline.timestamp != 0:
             parsed_date = datetime.utcfromtimestamp(deadline.timestamp)
-            parsed_date_str = parsed_date.strftime('%Y-%m-%d')
+            parsed_date_str = parsed_date.strftime("%Y-%m-%d")
         else:
-            parsed_date_str = '0'
+            parsed_date_str = "0"
 
         # Add date to dict if not existing
-        if not parsed_date_str in deadlines.keys():
+        if parsed_date_str not in deadlines:
             deadlines[parsed_date_str] = {}
-        
+
         # Add course to dict under date if not existing
         if not deadline.course in deadlines[parsed_date_str].keys():
             deadlines[parsed_date_str][deadline.course] = {
-                'name': deadline.course,
-                'url': deadline.course_url,
-                'deadlines': []
+                "name": deadline.course,
+                "url": deadline.course_url,
+                "deadlines": [],
             }
-        
+
         # Add deadline to dict under course
-        deadlines[parsed_date_str][deadline.course]['deadlines'].append({
-            'name': deadline.name,
-            'url': deadline.url,
-            'timestamp': deadline.timestamp
-        })
-    
+        deadlines[parsed_date_str][deadline.course]["deadlines"].append(
+            {
+                "name": deadline.name,
+                "url": deadline.url,
+                "timestamp": deadline.timestamp,
+            }
+        )
+
     # Sort deadlines per course by timestamp
-    for date in deadlines.keys():
-        for course in deadlines[date].keys():
-            deadlines[date][course]['deadlines'].sort(key=lambda x: x['timestamp'])
-    
+    for date in deadlines.values():
+        for course in date.values():
+            course["deadlines"].sort(key=lambda x: x["timestamp"])
+
     return deadlines

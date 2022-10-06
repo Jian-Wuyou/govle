@@ -66,7 +66,7 @@ const buildDeadlineList = (rawDeadlineList) => {
         }
 
         // Concat all deadline set elements into one string and insert it into page
-        deadlinesContainerFragment.insertAdjacentHTML('beforeend', DeadlineRow(day, month, deadlineSetList.join('')));
+        deadlinesContainer.insertAdjacentHTML('beforeend', DeadlineRow(day, month, deadlineSetList.join('')));
     }
 
     // TO-DO: implement #deadlines-overview or remove this code

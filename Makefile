@@ -20,7 +20,7 @@ format:
 	pre-commit run black --all-files
 
 lint:
-	pylint govle
+	pylint --rcfile=.pylintrc govle
 
 # Deployment
 run: run-uwsgi

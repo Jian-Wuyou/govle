@@ -9,38 +9,38 @@ from govle.models.profile import Profile
 def _reconstruct_user_from_db(user_data: Dict) -> Profile:
     # Reconstruct credentials dataclasses
     google_accounts = {}
-    if 'google_accounts' in user_data:
-        google_accounts = user_data['google_accounts']
-    moodle_account = MoodleCredentials(**user_data['moodle_account'])
+    if "google_accounts" in user_data:
+        google_accounts = user_data["google_accounts"]
+    moodle_account = MoodleCredentials(**user_data["moodle_account"])
 
     return Profile(
-        user_id=user_data['user_id'],
-        name=user_data['name'],
-        email=user_data['email'],
-        picture=user_data['picture'],
+        user_id=user_data["user_id"],
+        name=user_data["name"],
+        email=user_data["email"],
+        picture=user_data["picture"],
         google_accounts=google_accounts,
-        moodle_account=moodle_account
+        moodle_account=moodle_account,
     )
 
 
 class Database:
     def __init__(self, ref: Reference):
         self.root: Reference = ref
-    
+
     def add_user(self, user: Profile):
         """
         Adds a new user to the database.
         """
-        self.root.child(f'users/{user.user_id}').set(asdict(user))
-    
+        self.root.child(f"users/{user.user_id}").set(asdict(user))
+
     def delete_user(self, user_id: str):
         """
         Deletes a user from the database.
 
         :param user_id: User ID (string)
         """
-        self.root.child(f'users/{user_id}').delete()
-    
+        self.root.child(f"users/{user_id}").delete()
+
     def delete_user_google_creds(self, user_id: str, google_account_id: str):
         """
         Deletes a user's Google credentials.
@@ -50,11 +50,11 @@ class Database:
         # Don't do anything if user does not exist
         user = self.lookup_user_by_id(user_id)
         if not user:
-            raise ValueError(f'User {user_id} does not exist')
+            raise ValueError(f"User {user_id} does not exist")
 
         # Delete credentials under corresponding user ID and Google Account ID
-        self.root.child(f'users/{user_id}/google_accounts/{google_account_id}').delete()
-    
+        self.root.child(f"users/{user_id}/google_accounts/{google_account_id}").delete()
+
     def delete_user_moodle_creds(self, user_id: str):
         """
         Deletes a user's Moodle credentials.
@@ -64,11 +64,11 @@ class Database:
         # Don't do anything if user does not exist
         user = self.lookup_user_by_id(user_id)
         if not user:
-            raise ValueError(f'User {user_id} does not exist')
+            raise ValueError(f"User {user_id} does not exist")
 
         # Delete credentials under corresponding user ID
-        self.root.child(f'users/{user_id}/moodle_account').set({'password': ''})
-    
+        self.root.child(f"users/{user_id}/moodle_account").set({"password": ""})
+
     def lookup_user_by_email(self, email: str) -> Optional[Profile]:
         """
         Looks up a user by email and returns a Profile instance.
@@ -76,12 +76,12 @@ class Database:
         :param email: User email
         :return: User ID string
         """
-        users = self.root.child('users').get()
+        users = self.root.child("users").get()
         if not users:
             return None
 
         for _, user in users.items():
-            if user['email'] == email:
+            if user["email"] == email:
                 return _reconstruct_user_from_db(user)
         return None
 
@@ -94,12 +94,14 @@ class Database:
         :param user_id: User ID (string)
         :return: Profile instance
         """
-        loaded_user = self.root.child(f'users/{user_id}').get()
+        loaded_user = self.root.child(f"users/{user_id}").get()
         if loaded_user:
             return _reconstruct_user_from_db(loaded_user)
         return None
 
-    def update_user_google_creds(self, user_id: str, cred_id: str, creds: GoogleCredentials):
+    def update_user_google_creds(
+        self, user_id: str, cred_id: str, creds: GoogleCredentials
+    ):
         """
         Updates a user's Google credentials.
 
@@ -109,11 +111,11 @@ class Database:
         # Don't do anything if user does not exist
         user = self.lookup_user_by_id(user_id)
         if not user:
-            raise ValueError(f'User {user_id} does not exist')
+            raise ValueError(f"User {user_id} does not exist")
 
         # Save credentials under corresponding user ID
-        self.root.child(f'users/{user_id}/google_accounts/{cred_id}').set(asdict(creds))
-    
+        self.root.child(f"users/{user_id}/google_accounts/{cred_id}").set(asdict(creds))
+
     def update_user_moodle_creds(self, user_id: str, creds: MoodleCredentials):
         """
         Updates a user's Moodle credentials.
@@ -124,7 +126,7 @@ class Database:
         # Don't do anything if user does not exist
         user = self.lookup_user_by_id(user_id)
         if not user:
-            raise ValueError(f'User {user_id} does not exist')
+            raise ValueError(f"User {user_id} does not exist")
 
         # Save credentials under corresponding user ID
-        self.root.child(f'users/{user_id}/moodle_account').set(asdict(creds))
+        self.root.child(f"users/{user_id}/moodle_account").set(asdict(creds))

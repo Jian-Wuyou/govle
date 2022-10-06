@@ -1,86 +1,89 @@
 from os import environ
 from urllib.parse import urljoin, urlparse
 
-from flask import (Blueprint, current_app, redirect, render_template, request,
-                   session, url_for)
+from flask import (
+    Blueprint,
+    current_app,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_user
 from google.auth.transport import requests
+from google.auth.exceptions import GoogleAuthError
 from google.oauth2 import id_token
 from govle.models.profile import create_from_google_jwt
 
-login = Blueprint('login', __name__)
+login = Blueprint("login", __name__)
 
 
 # https://stackoverflow.com/a/61446498
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and \
-           ref_url.netloc == test_url.netloc
+    return test_url.scheme in ("http", "https") and ref_url.netloc == test_url.netloc
 
 
-@login.route('/login', methods=['GET'])
+@login.route("/login", methods=["GET"])
 def login_page():
     # Make sure that required environment variables are set
-    if 'DOMAIN' not in environ:
-        raise RuntimeError('DOMAIN environment variable not set')
-    if 'GOOGLE_CLIENT_ID' not in environ:
-        raise RuntimeError('GOOGLE_CLIENT_ID environment variable not set')
+    if "DOMAIN" not in environ:
+        raise RuntimeError("DOMAIN environment variable not set")
+    if "GOOGLE_CLIENT_ID" not in environ:
+        raise RuntimeError("GOOGLE_CLIENT_ID environment variable not set")
 
     # Redirect to dashboard if already logged in
     if current_user.is_authenticated:
-        return redirect(url_for('dashboard.dashboard_page'))
+        return redirect(url_for("dashboard.dashboard_page"))
 
     return render_template(
-        'login.html',
-        full_width='true',
-        domain=environ['DOMAIN'],
-        google_client_id=environ['GOOGLE_CLIENT_ID']
+        "login.html",
+        full_width="true",
+        domain=environ["DOMAIN"],
+        google_client_id=environ["GOOGLE_CLIENT_ID"],
     )
 
 
-@login.route('/login', methods=['POST'])
+@login.route("/login", methods=["POST"])
 def login_form():
     # If the POSTed form data has the "g_csrf_token" field,
     # then we assume the login was with a Google account
     # and the form data contains a JWT token we should verify.
-    if 'g_csrf_token' not in request.form:
+    if "g_csrf_token" not in request.form:
         # Form data does not contain the JWT token,
         # so something must have gone wrong. Abort login.
-        return 'CSRF token missing', 400
+        return "CSRF token missing", 400
 
     # First check if the CSRF token checks out...
-    csrf_cookie = request.cookies.get('g_csrf_token')
-    if not csrf_cookie:
-        return 'CSRF cookie missing', 400
-    if csrf_cookie != request.form['g_csrf_token']:
-        return 'CSRF token mismatch', 400
+    csrf_cookie = request.cookies.get("g_csrf_token")
+    if not csrf_cookie or csrf_cookie != request.form["g_csrf_token"]:
+        return "CSRF cookie missing", 400
 
     # ...then decode the JWT using Google's library
     try:
         id_info = id_token.verify_oauth2_token(
-            request.form['credential'],
-            requests.Request(),
-            environ['GOOGLE_CLIENT_ID']
+            request.form["credential"], requests.Request(), environ["GOOGLE_CLIENT_ID"]
         )
-    except Exception as e:
+    except (ValueError, GoogleAuthError) as e:
         # Could not decode JWT
-        return f'Invalid JWT: {str(e)}', 400
+        return f"Invalid JWT: {str(e)}", 400
     else:
         # Decoded JWT successfully.
         # Is the user verified?
-        if not id_info['email_verified']:
-            return 'Email not verified', 400
+        if not id_info["email_verified"]:
+            return "Email not verified", 400
 
     # Does this user exist?
-    email = id_info['email']
-    db = current_app.config['DB']
+    email = id_info["email"]
+    db = current_app.config["DB"]
     matching_user = db.lookup_user_by_email(email)
     is_new_user = matching_user is None
     if is_new_user:
         # Is the user verified?
-        if not id_info['email_verified']:
-            return 'Email not verified', 400
+        if not id_info["email_verified"]:
+            return "Email not verified", 400
 
         # Create user
         matching_user = create_from_google_jwt(id_info)
@@ -90,8 +93,8 @@ def login_form():
     login_user(matching_user)
 
     # Redirect to the next page
-    session['IS_NEW_USER'] = str(is_new_user)
-    next_url = request.args.get('next')
+    session["IS_NEW_USER"] = str(is_new_user)
+    next_url = request.args.get("next")
     if not is_safe_url(next_url):
-        return 'Unsafe redirect URL', 400
-    return redirect(next_url or url_for('index.index_page'))
+        return "Unsafe redirect URL", 400
+    return redirect(next_url or url_for("index.index_page"))

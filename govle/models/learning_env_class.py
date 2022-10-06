@@ -8,6 +8,7 @@ class LearningEnvClass(ABC):
     """
     Abstract dataclass for a learning environment class object.
     """
+
     # Class ID
     class_id: int
 
@@ -26,7 +27,6 @@ class GoogleClass(LearningEnvClass):
     """
     Abstract dataclass for a class hosted on Google Classroom.
     """
-    pass
 
 
 @dataclass
@@ -34,6 +34,7 @@ class MoodleClass(LearningEnvClass):
     """
     Abstract dataclass for a class hosted on Moodle.
     """
+
     completion_status: float
 
 
@@ -41,16 +42,16 @@ class LearningEnvClassEnc(JSONEncoder):
     """
     JSON encoder for LearningEnvClass
     """
+
     def default(self, o):
         if isinstance(o, LearningEnvClass):
             data = {
-                'class_id': o.class_id,
-                'name': o.name,
-                'description': o.description,
-                'url': o.url
+                "class_id": o.class_id,
+                "name": o.name,
+                "description": o.description,
+                "url": o.url,
             }
-            if 'completion_status' in dir(o):
-                data['completion_status'] = o.completion_status
+            if "completion_status" in dir(o):
+                data["completion_status"] = o.completion_status
             return data
-        else:
-            return super().default(o)
+        return super().default(o)

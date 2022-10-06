@@ -5,7 +5,7 @@ from govle.models.credentials import GoogleCredentials, MoodleCredentials
 
 
 @dataclass
-class Profile():
+class Profile:
     # User ID (for LoginManager)
     user_id: str
 
@@ -19,10 +19,12 @@ class Profile():
     moodle_account: MoodleCredentials
 
     # Linked Google accounts
-    google_accounts: Optional[Dict[str, GoogleCredentials]] = field(default_factory=dict)
+    google_accounts: Optional[Dict[str, GoogleCredentials]] = field(
+        default_factory=dict
+    )
 
     # User profile picture
-    picture: str = field(default='')
+    picture: str = field(default="")
 
     def __post_init__(self):
         """
@@ -31,7 +33,7 @@ class Profile():
         self._is_authenticated = True
         self._is_active = True
         self._is_anonymous = False
-    
+
     @property
     def is_authenticated(self) -> bool:
         """
@@ -40,7 +42,7 @@ class Profile():
         :return: True if authenticated, False otherwise
         """
         return self._is_authenticated
-    
+
     @property
     def is_active(self) -> bool:
         """
@@ -49,7 +51,7 @@ class Profile():
         :return: True if active, False otherwise
         """
         return self._is_active
-    
+
     @property
     def is_anonymous(self) -> bool:
         """
@@ -58,7 +60,7 @@ class Profile():
         :return: True if anonymous, False otherwise
         """
         return self._is_anonymous
-    
+
     def get_id(self) -> str:
         """
         Returns the user ID. This is used by Flask-Login.
@@ -70,10 +72,10 @@ class Profile():
 
 def create_from_google_jwt(jwt_info: Dict[str, Union[str, int, bool]]) -> Profile:
     return Profile(
-        user_id=jwt_info['sub'],
-        name=jwt_info['name'],
-        email=jwt_info['email'],
-        picture=jwt_info['picture'],
+        user_id=jwt_info["sub"],
+        name=jwt_info["name"],
+        email=jwt_info["email"],
+        picture=jwt_info["picture"],
         moodle_account=MoodleCredentials(),
-        google_accounts={}
+        google_accounts={},
     )

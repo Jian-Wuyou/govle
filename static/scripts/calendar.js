@@ -44,7 +44,7 @@ function getCalendarCurrent(date) {
     let month = date.getMonth();
     document.getElementById('calendar-date').innerText = `${months[month]} ${date.getFullYear()}`;
 
-    let table = date.getDay() ? '<tr>' : '';
+    let table = '<table>' + date.getDay() ? '<tr>' : '';
     //number of cells
     //gets kung pang-ilang day yung simula nung calendar
     for (let i = date.getDay(); i > 0; i--) {
@@ -140,12 +140,12 @@ function getCalendarCurrent(date) {
             //console.log(google_deadlines);
         });
 
-    document.getElementById('prev-month').addEventListener('click', (e) => {
+    document.getElementById('prev-month').addEventListener('click', () => {
         date.setMonth(date.getMonth() - 1);
         getCalendarCurrent(date);
     });
 
-    document.getElementById('next-month').addEventListener('click', (e) => {
+    document.getElementById('next-month').addEventListener('click', () => {
         date.setMonth(date.getMonth() + 1);
         getCalendarCurrent(date);
     });
