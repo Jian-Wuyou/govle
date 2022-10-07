@@ -1,36 +1,36 @@
-const GoogleClass = (email, url, title, description) => `
+const classCard = (classUrl, htmlContent) => `
     <div class="col-12 mb-4 col-lg-4 col-md-6 col-xs-12">
-        <div class="card">
-            <div class="card-body">
-                <a class="govle-class" href="${url}?authuser=${email}" rel="noopener" target="_blank">
-                    <h4 class="text-dark mb-3"><span>${title}</span><span>&#8599;</span></h4>
-                    <p class="text-dark mb-0">${description}</p>
-                    <p class="text-secondary mb-0">${email}</p>
-                </a>
-            </div>
+      <div class="card">
+        <div class="card-body">
+          <a class="govle-class" href="${classUrl}" rel="noopener" target="_blank">
+            ${htmlContent}
+          </a>
         </div>
+      </div>
     </div>
 `;
 
-const MoodleClass = (url, title, description, progress) => `
-    <div class="col-12 mb-4 col-lg-4 col-md-6 col-xs-12">
-        <div class="card">
-            <div class="card-body">
-                <a class="govle-class" href="${url}" rel="noopener" target="_blank">
-                    <h4 class="text-dark mb-3"><span>${title}</span><span>&#8599;</span></h4>
-                    <p class="text-dark mb-0">${description}</p>
-                    <div class="progress mt-2">
-                        <div class="progress-bar bg-success" role="progressbar"
-                            aria-valuemin="0" aria-valuemax="100"
-                            style="width: ${progress}%" aria-valuenow="${parseInt(progress)}">
-                            ${parseInt(progress)}%
-                        </div>
-                    </div>
-                </a>
+const GoogleClass = (email, url, title, description) =>
+    classCard(
+        `${url}?authuser=${email}`,
+        `<h4 class="text-dark mb-3"><span>${title}</span><span>&#8599;</span></h4>
+        <p class="text-dark mb-0">${description}</p>
+        <p class="text-secondary mb-0">${email}</p>`
+    );
+
+const MoodleClass = (url, title, description, progress) =>
+    classCard(
+        url,
+        `<h4 class="text-dark mb-3"><span>${title}</span><span>&#8599;</span></h4>
+        <p class="text-dark mb-0">${description}</p>
+        <div class="progress mt-2">
+            <div class="progress-bar bg-success" role="progressbar"
+                aria-valuemin="0" aria-valuemax="100"
+                style="width: ${progress}%" aria-valuenow="${parseInt(progress)}">
+                ${parseInt(progress)}%
             </div>
-        </div>
-    </div>
-`;
+        </div>`
+    );
 
 (() => {
     // Get list of classes from API
