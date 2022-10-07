@@ -35,34 +35,28 @@ const buildDeadlineList = (rawDeadlineList) => {
     }
 
     // Iterate through each date
-    let num_deadlines = 0;
-    for (let date in mergedDeadlineList) {
+    let numDeadlines = 0;
+    for (const date in mergedDeadlineList) {
         // Parse YYYY-MM-DD date into MM and DD
-        const date_split = date.split('-');
-        const month = MonthNames[parseInt(date_split[1]) - 1];
-        const day = date_split[2];
+        const dateSplit = date.split('-');
+        const month = MonthNames[parseInt(dateSplit[1]) - 1];
+        const day = dateSplit[2];
 
         // Iterate through each course
         const deadlineSetList = [];
-        for (let course in mergedDeadlineList[date]) {
+        for (const [courseName, course] of Object.entries(mergedDeadlineList[date])) {
             // Iterate through each deadline
             const deadlineList = [];
-            for (let deadline in mergedDeadlineList[date][course]['deadlines']) {
+            for (const deadline of Object.values(course['deadlines'])) {
                 // Add deadline to list
-                deadlineList.push(
-                    Deadline(
-                        mergedDeadlineList[date][course]['deadlines'][deadline]['name'],
-                        mergedDeadlineList[date][course]['deadlines'][deadline]['url']
-                    )
-                );
+                deadlineList.push(Deadline(deadline['name'], deadline['url']));
 
                 // Increment number of deadlines
-                num_deadlines++;
+                numDeadlines++;
             }
 
             // Concat all deadline elements into one string
-            const deadlineSet = DeadlineSet(course, mergedDeadlineList[date][course]['url'], deadlineList.join(''));
-            deadlineSetList.push(deadlineSet);
+            deadlineSetList.push(DeadlineSet(courseName, course['url'], deadlineList.join('')));
         }
 
         // Concat all deadline set elements into one string and insert it into page
@@ -70,8 +64,8 @@ const buildDeadlineList = (rawDeadlineList) => {
     }
 
     // TO-DO: implement #deadlines-overview or remove this code
-    document.getElementById('deadlines-overview').innerText = `${num_deadlines} assignment${
-        num_deadlines === 1 ? '' : 's'
+    document.getElementById('deadlines-overview').innerText = `${numDeadlines} assignment${
+        numDeadlines === 1 ? '' : 's'
     }`;
 };
 
