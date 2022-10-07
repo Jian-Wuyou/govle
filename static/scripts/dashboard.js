@@ -21,21 +21,12 @@ const Deadline = (deadlineName, deadlineLink) => `
 const MonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const buildDeadlineList = (rawDeadlineList) => {
-    const deadlinesContainer = document.getElementById('deadlines-container');
-
-    // clear deadlines
-    deadlinesContainer.replaceChildren();
-
     const mergedDeadlineList = Object.assign({}, ...rawDeadlineList);
 
-    if (rawDeadlineList.length === 1) {
-        deadlinesContainer.classList.remove('text-center');
-    } else {
-        deadlinesContainer.querySelectorAll('.spinner-border').forEach((e) => e.remove());
-    }
+    const deadlinesContainer = document.getElementById('deadlines-container');
 
     // Iterate through each date
-    let numDeadlines = 0;
+    const deadlineRowList = [];
     for (const date in mergedDeadlineList) {
         // Parse YYYY-MM-DD date into MM and DD
         const dateSplit = date.split('-');
@@ -50,23 +41,25 @@ const buildDeadlineList = (rawDeadlineList) => {
             for (const deadline of Object.values(course['deadlines'])) {
                 // Add deadline to list
                 deadlineList.push(Deadline(deadline['name'], deadline['url']));
-
-                // Increment number of deadlines
-                numDeadlines++;
             }
 
             // Concat all deadline elements into one string
             deadlineSetList.push(DeadlineSet(courseName, course['url'], deadlineList.join('')));
         }
 
-        // Concat all deadline set elements into one string and insert it into page
-        deadlinesContainer.insertAdjacentHTML('beforeend', DeadlineRow(day, month, deadlineSetList.join('')));
+        // Concat all deadline set elements into one string
+        deadlineRowList.push(DeadlineRow(day, month, deadlineSetList.join('')));
     }
+    // clear previous deadlines
+    deadlinesContainer.replaceChildren(...deadlinesContainer.querySelectorAll('.spinner-border'));
 
-    // TO-DO: implement #deadlines-overview or remove this code
-    document.getElementById('deadlines-overview').innerText = `${numDeadlines} assignment${
-        numDeadlines === 1 ? '' : 's'
-    }`;
+    // insert new deadlines
+    deadlinesContainer.insertAdjacentHTML('beforeend', deadlineRowList.join(''));
+
+    // // TO-DO: implement #deadlines-overview or remove this code
+    // document.getElementById('deadlines-overview').innerText = `${numDeadlines} assignment${
+    //     numDeadlines === 1 ? '' : 's'
+    // }`;
 };
 
 (() => {
@@ -97,30 +90,35 @@ const buildDeadlineList = (rawDeadlineList) => {
     let deadlines = [];
 
     const deadlinesContainer = document.getElementById('deadlines-container');
-    fetch('/api/v1/moodle/deadlines')
-        .then((response) => response.json())
-        .then((moodle_deadlines) => {
-            // If the dict is empty, display a message saying so.
-            if (Object.keys(moodle_deadlines).length === 0) {
-                deadlinesContainer.insertAdjacentHTML(
-                    'beforeend',
-                    `<p class="text-center">No deadlines from UVL&#234;.</p>`
-                );
-            }
-            deadlines.push(moodle_deadlines);
-            buildDeadlineList(deadlines);
-        });
-    fetch('/api/v1/google/coursework')
-        .then((response) => response.json())
-        .then((google_deadlines) => {
-            // If the list is empty, display a message saying so.
-            if (Object.keys(google_deadlines).length === 0) {
-                deadlinesContainer.insertAdjacentHTML(
-                    'beforeend',
-                    `<p class="text-center">No deadlines from Google Classroom.</p>`
-                );
-            }
-            deadlines.push(google_deadlines);
-            buildDeadlineList(deadlines);
-        });
+
+    const classProviders = {
+        'UVL&#234;': '/api/v1/moodle/deadlines',
+        'Google Classroom': '/api/v1/google/coursework',
+    };
+
+    // fetch and mutate values to JSON
+    for (const [provider, url] of Object.entries(classProviders)) {
+        classProviders[provider] = fetch(url)
+            .then((response) => response.json())
+            .then((provider_deadlines) => {
+                if (Object.keys(provider_deadlines).length === 0) {
+                    deadlinesContainer.insertAdjacentHTML(
+                        'beforeend',
+                        `<p class="text-center">No deadlines from ${provider}.</p>`
+                    );
+                }
+                deadlines.push(provider_deadlines);
+                buildDeadlineList(deadlines);
+            });
+    }
+
+    // Once one finishes, regardless of status, remove the centering
+    Promise.race(Object.values(classProviders)).finally(() => {
+        deadlinesContainer.classList.remove('text-center');
+    });
+
+    // When all are done, regardless of status, remove spinner/s
+    Promise.allSettled(Object.values(classProviders)).then(() => {
+        deadlinesContainer.querySelectorAll('.spinner-border').forEach((e) => e.remove());
+    });
 })();
